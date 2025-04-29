@@ -401,6 +401,7 @@ need to put name: '' or name?: string to initialize
     ```
 
 - Static Members
+    - Used where a single instance of a class member property/method is needed in memory
     - Below are 2 separate entities
     ```
     class Ride {
@@ -578,3 +579,62 @@ need to put name: '' or name?: string to initialize
     ```
     - When to use interface vs abstract
         - Use if no logic/algo/method implementation (only method declarations)
+    - Can use inheritance ex. interface CloudCal extendes Calendar {}
+    - to Implement in class: (shortcut cmd+. and click on class name)
+    ```
+    class GoogleCalendar implements Calendar {
+        // name: string; //switch with constructor below
+        constructor(public name: string) {}
+        addEvent(): void {
+            throw new Error("Method not implemented.");
+        }
+        removeEvent(): void {
+            throw new Error("Method not implemented.");
+        }
+    }
+    ```
+
+## Generics
+
+- Common/Reusable without anti-pattern behavior
+
+#### Generic Classes
+- Called template classes in C++
+    ```
+    class KeyValuePair<T> { 
+        constructor(public key: T, public value: string) {}
+    }
+
+    let pair = new KeyValuePair<number>(1, 'a');
+    let pair2 = new KeyValuePair<string>(1, 'a');
+    ```
+- Can also make value generic
+    ```
+    class KeyValuePair<K, V> { 
+        constructor(public key: K, public value: V) {}
+    }
+
+    let pair = new KeyValuePair<number, string>(1, 'a');
+    ```
+
+#### Generic Functions
+    ```
+    function wrapInArray<T>(value: T) {
+        return [value];
+    }
+
+    let numbers = wrapInArray(1);
+    ```
+
+- Can put inside classes as well, use w/ static, etc. 
+    
+    ```
+    class ArrayUtils{
+        wrapInArray<T>(value: T) {
+            return [value];
+        }
+    }
+    ```
+
+#### Generic Interfaces
+- 
