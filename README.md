@@ -637,4 +637,69 @@ need to put name: '' or name?: string to initialize
     ```
 
 #### Generic Interfaces
-- 
+```
+interface Result<T> {
+    data: T | null,
+    error: string | null
+}
+
+function fetch<T>(url: string): Result<T> {
+    returns { data: null, error: null }
+}
+
+interface User {
+    username: string;
+}
+
+interfact Product {
+    title: string;
+}
+
+let result = fetch<User>('url')
+result.data.username
+
+let result = fetch<Product>('url')
+result.data.title
+```
+
+#### Generic Constraints
+- Can add constraints w/ extends
+    ```
+    function echo<T extends number | string >(value: T): T {
+        return value;
+    }
+
+    echo('1')
+    ```
+- Can be more specific
+    ```
+    function echo<T extends { name: string } >(value: T): T {
+        return value;
+    }
+
+    echo({ name: 'a'})
+    ```
+- Can use w/ interface
+    ```
+    interface Person {
+        name: String
+    }
+
+    function echo<T extends Person >(value: T): T {
+        return value;
+    }
+    ```
+- Can use w/ class
+    ```
+    class Person {
+        constructor(public name: string) {}
+    }
+
+    function echo<T extends Person >(value: T): T {
+        return value;
+    }
+
+    echo(new Person('a'))
+    ```
+
+####
