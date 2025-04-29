@@ -103,9 +103,122 @@ readononly id: number
 ### Advanced Types
 
 - Type Aliases
+    - Define custom type
+    ```
+    type Employee = {
+        readonly id: number,
+        name: string
+        retire: (date: Date) => void
+    }
+
+    let employee: Employee = {
+        id: 1, 
+        name: '', 
+        retire: (date: Date) => {
+            console.log(date);  
+    }
+    ```
 - Unions and Intersections
-- Type Narrowing
+    - Union Types : variable or function parameter more than one type
+    ```
+    function kgToLbs(weight: number | string) {
+        //Narrowing
+        if (type of weight === 'number')
+            return weight * 2.2;
+        else 
+            return parseInt(weight) * 2.2;
+    }
+    kgToLbs(10);
+    kgToLbs('10kg');
+    ```
+    - Intersection Types : Other technique for combing types (at the same time)
+    ```
+    let weight: number & string; // <- not realistic, just example
+
+    type Draggable = {
+        drag: () => void
+    };
+
+    type Resizeable = {
+        resize: () => void
+    };
+
+    type UIWidget = Draggable & Resizeable; // more realistic
+
+    let textBox: UIWidget = {
+        drag: () => {},
+        resize: () => {}
+    };
+    ```
+- Literal Types
+    - Exact or specific value
+    ```
+    let quantity: 50;
+    ```
+    - Combine with Union/Intersection Types
+    ```
+    let quanitity: 50 | 100 = 100;
+
+    type Quantity = 50 | 100
+    let quantity: Quantity = 100;
+
+    type Metric = 'cm' | 'inch';
+    ```
 - Nullable Types
+    - TS strict about null type
+    ```
+    function greet(name: string) {
+        console.log(name.toUpperCase());
+    }
+
+    greet(null); // doesn't work in TS due to strictNullChecks
+    ```
+    - Same with undefined. Workaround is Union operator.
+    ```
+        ```
+    function greet(name: string | null | undefined) {
+        if (name)
+            console.log(name.toUpperCase());
+        else
+            console.log('Hola!');
+    }
+
+    greet(null); // log "Hola!"
+    ```
+- Optional Chaining
+    - Verbose way
+    ```
+    type Customer = {
+        birthday: Date
+    };
+
+    function getCustomer(id: number): Customer | null | undefined {
+        return id === 0 ? null : { birthday: new Date() };
+    }
+
+    let customer = getCustomer(0);
+    if (customer !== null && customer !== undefined)
+        console.log(customer.birthday);
+    ```
+    - Optional Property Access Operator
+    ```
+    let customer = getCustomer(0);
+        console.log(customer?.birthday);
+    ```
+    - Optional element access operator & Optional call
+    ```
+    //Opt. el access op
+    customers?.[0]
+
+    //Opt call
+    let log: any = null;
+    log?.('a');
+    ```
 - The Unknown Type
+    - type-safe counterpart of any type
+        - let value: unknown; instead of let value: any;
+    - Combine with narrowing/Unions
 - The Never Type
+    - Value types that will never occur
+        - ex: function that will never return or condition that will always throw an error, infinite loops, false type guards, etc.
 
