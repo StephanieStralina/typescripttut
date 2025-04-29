@@ -702,4 +702,101 @@ result.data.title
     echo(new Person('a'))
     ```
 
-####
+#### Extending Generic Classes
+- 
+    ```
+    interface Product {
+        name: string;
+        price: number;
+    }
+
+    class Store<T> {
+        private _objects: T[] = [];
+
+        add(obj: T): void {
+            this.objects.push(obj);
+        }
+    }
+
+    let store = new Store<Product>();
+
+    class CompressibleStore<T> extends Store<T>{ //passing on generic type param
+        compress() {}
+    }
+
+    let store = new CompressibleStore<Product>();
+    store.compress();
+
+    // Restricting generic type param
+    class SearachableStore<T extends { name: string }> extends Store<T> {
+        find(name: string): T | undefined {
+            return this._objects.find(obj => obj.name === name); //would require protected instead of private above
+        }
+    }
+
+    //Fixing/Terminating generic type param
+    class ProductStore extends Store<Product> {
+        filterByCategory(category: string): Product[] {
+            return [];
+        }
+    }
+    ```
+
+#### Keyof Operator
+
+```
+find(property: string, value: unknown): T | undefined {
+    return this._objects.find(obj => obj[property] === value);
+}
+
+let store = new Store<Product>();
+store.add({ name: 'a', price: 1 });
+store.find('name', 'a')
+store.find('price', 1)
+// program will crash if you look for something not present
+
+//Keyof fixes this issue
+//If T is Product
+// keyof T => 'name' or 'price'
+find(property: keyof T, value: unknown): T | undefined {
+    return this._objects.find(obj => obj[property] === value);
+}
+```
+
+#### Type Mapping
+
+```
+interfact Product {
+    name: string;
+    price: number;
+}
+
+type ReadOnlyProduct = {
+    //Index sig
+    //keyof op
+    readonly [Property in keyof Product]: Product[Property] //similar to forloop
+}
+
+let product: ReadOnlyProduct = {
+    name: 'a',
+    price: 1
+}
+
+// Can make this generic
+type ReadOnly<T> = {
+    //Index sig
+    //keyof op
+    readonly [K in keyof T]: T[K] //similar to forloop
+}
+
+//Optional generics
+type Optional<T> = {
+    [K in keyof T]?: T[K]
+}
+
+//Nullable generics
+type Nullable<T> = {
+    [K in keyof T]: T[K] | null
+}
+```
+- Built in to TS via Utility Types
