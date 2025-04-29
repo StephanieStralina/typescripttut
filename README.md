@@ -16,7 +16,7 @@ Drawbacks:
 Transpilation/Compilation step
 Strictness
 
-### Built In Types
+## Built In Types
 - Extends JS number, string boolean, null, undefined, object
 - TS: any, unknown, never, enum, tuple
 
@@ -73,7 +73,7 @@ let mySize: Size = Size.Medium // 2
 
 (Pro tip: adding const in from of enum Size makes prettier JS)
 
-### Functions
+## Functions
 ```
 function calculateTax(income: number, taxYear?: number): number {
     return 0;
@@ -86,7 +86,7 @@ Must pass exact amount of args, add ? to make it optional and define inline
 ORRRR (preferred method below)
 taxYear = 2022 and arg if present will override it
 
-### Objects
+## Objects
 ```
 let employee: {
     id: number,
@@ -97,10 +97,10 @@ employee.name = 'Mosh';
 
 need to put name: '' or name?: string to initialize
 
-Read Only Modifief
-readononly id: number
+- Read Only Modifier
+    - readononly id: number
 
-### Advanced Types
+## Advanced Types
 
 - Type Aliases
     - Define custom type
@@ -214,11 +214,69 @@ readononly id: number
     let log: any = null;
     log?.('a');
     ```
+- Nullish Coalescing Operator
+    - Uses ?? allows for null or undefined or use the default value
+    ```
+    let speed: number | null = null;
+    let ride = {
+        speed: speed ?? 30
+    }
+    ```
+- Type Assertions
+    - When you know more about the type than the program
+    ```
+    let phone = document.getElementByID('phone') as HTMLInputElement
+    // because we know it isn't null which is an option in the event the
+    // program can't find it
+    ```
+    - other syntax instead of as keyword is to prefix w/ angle brackets
+    ```
+    let phone = <HTMLInputElement> document.getElementByID('phone')
+    ```
 - The Unknown Type
     - type-safe counterpart of any type
         - let value: unknown; instead of let value: any;
+        - unknown leads to errors, soooo:
     - Combine with narrowing/Unions
+        - might need to use instanceof if not primitive type
 - The Never Type
     - Value types that will never occur
         - ex: function that will never return or condition that will always throw an error, infinite loops, false type guards, etc.
 
+## Classes, Interfaces, OOP
+
+- OOP Notes:
+    - State & Behavior
+    - Properties in Person Object might be name, email
+    - Methods in a Person object might be talk(), dance()
+
+#### Classes
+
+- Creating Classes
+    - Blueprint for creating objects (inheritance)
+    ```
+    class Account {
+        id: number;
+        owner: string;
+        balance: number;
+
+        constructor(id: number, owner: string, balance: number) {
+            this.id = id;
+            this.owner = owner;
+            this.balance = balance;
+        }
+
+        deposit(amount: number): void {
+            if (amount <= 0)
+                throw new Error('Invalid amount');
+            this.balance += amount;
+        }
+    }
+    ```
+
+- Creating Objects via Classes
+    ```
+    let account = new Account(1, 'Steph', 0);
+    account.deposit(100);
+    console.log(account.balance);
+    ```
