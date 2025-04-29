@@ -250,7 +250,7 @@ need to put name: '' or name?: string to initialize
     - Properties in Person Object might be name, email
     - Methods in a Person object might be talk(), dance()
 
-#### Classes
+#### Classes & Objects
 
 - Creating Classes
     - Blueprint for creating objects (inheritance)
@@ -279,4 +279,302 @@ need to put name: '' or name?: string to initialize
     let account = new Account(1, 'Steph', 0);
     account.deposit(100);
     console.log(account.balance);
+
+    console.log(account instanceof Account); // for custom types/classes
     ```
+
+#### Properties & Keywords
+ - Read-only and Optional Properties
+    - prefix property with readonly to avoid resetting values
+    - optional properties have ? (nickname?: string)
+
+- Access Control Keywords/Access Modifiers
+    - 3 Types: Public, Private, Protected
+        - Public is default
+        - preface property with private to only be able to access within class
+            - add underscore to name to disable access the property in an object
+            - only use when absolutely necessary (not passwords, etc.)
+    ```
+    class Account {
+        id: number;
+        owner: string;
+        private _balance: number;
+
+        constructor(id: number, owner: string, balance: number) {
+            this.id = id;
+            this.owner = owner;
+            this.balance = balance;
+        }
+        deposit(amount: number): void {
+            if (amount <= 0)
+                throw new Error('Invalid amount');
+            this._balanace += amount;
+        }
+
+        private calculateTax() {
+            //also works this way
+        }
+
+        getBalance(): number {
+            return this._balance;
+        }
+    }
+    ```
+
+- Parameter Properties
+    - More concise code
+    ```
+        class Account {
+        //readonly id: number;
+        //owner: string;
+        //balance: number;
+        nickname?: string;
+
+        constructor(public readonly id: number, public owner: string, private _balance: number) {
+            //this.id = id;
+            //this.owner = owner;
+            //this.balance = balance;
+        }
+    }
+
+    //now looks like
+    class Account {
+        nickname?: string;
+
+        constructor(
+            public readonly id: number, 
+            public owner: string, 
+            private _balance: number) {
+        }
+    ```
+
+- Getters & Setters
+    - method inside a class for getting value of a property
+        - gets but cannot set (readonly by nature)
+    ```
+        class Account {
+        nickname?: string;
+
+        constructor(
+            public readonly id: number, 
+            public owner: string, 
+            private _balance: number) {}
+            
+            get balance(): number {
+                return this._balance;
+        }
+    }
+    ```
+    - Needs a setter for access!
+        ```
+        class Account {
+        nickname?: string;
+
+        constructor(
+            public readonly id: number, 
+            public owner: string, 
+            private _balance: number) {
+            
+            get balance(): number {
+                return this._balance;
+            }
+
+            set balance(value: number) {
+                if(value < 0)
+                    throw new Error('Invalid value');
+                this._balance = value;
+            }
+        }
+    ```
+
+- Index Signatures
+    ```
+    class SeatAssignment {
+        //A1, A2, ...
+        //Steph, John, ...
+        [seatNumber: string]: string; //Index Sig Prop
+    }
+
+    let seats = new SeatAssignment();
+    seats.A1 = 'Steph'
+    seats['A2'] = 'John' // also works
+    ```
+
+- Static Members
+    - Below are 2 separate entities
+    ```
+    class Ride {
+        // passenger
+        // pickupLocation
+        // dropOffLocation
+        activeRides: number = 0;
+
+        start() { this.activeRides++; }
+        stop() { this.activeRides--; }
+    }
+
+    let ride1 = new Ride();
+    ride1.start();
+
+    let ride2 = new Ride();
+    ride2.start();
+
+    console.log(ride1.activeRides)
+    console.log(ride2.activeRides)
+    ```
+    - need global place to keep track of active rides
+    ```
+    class Ride {
+        // passenger
+        // pickupLocation
+        // dropOffLocation
+        static activeRides: number = 0; // now belongs to global
+
+        start() { Ride.activeRides++; } // now belongs to Ride Class
+        stop() { Ride.activeRides--; }
+    }
+
+    let ride1 = new Ride();
+    ride1.start();
+
+    let ride2 = new Ride();
+    ride2.start();
+
+    console.log(Ride.activeRides) // now belongs to Ride class
+    ```
+    -issue w/ this implementation lets active override, needs to be private
+    and use getters/setters to avoid something like Ride.activeRides = 10;
+    ```
+    class Ride {
+        private static _activeRides: number = 0;
+
+        start() { Ride.activeRides++; } // now belongs to Ride Class
+        stop() { Ride.activeRides--; }
+
+        static get activeRides() { // implement getter
+            return Ride._activeRides;
+        }
+    }
+
+    let ride1 = new Ride();
+    ride1.start();
+
+    let ride2 = new Ride();
+    ride2.start();
+
+    console.log(Ride.activeRides)
+    ```
+
+- Inheritance
+    - Student and Teacher classes might have shared properties and methods
+    - Utilize inheritance like Person, who Student and Teacher inherit from
+        - Known as Parent/Base/Super Class and Child/Derived/Sub Class
+    ```
+    class Person {
+        
+    constructor(public firstName: string, public lastName:string){}
+        get fullName() {
+            return this.firstName + ' ' + this.lasName;
+        }
+
+        walk() {
+            console.log('Walking');
+        }
+    }
+
+    class Student extends Person {
+        constructor(
+            public studentId: number, 
+            firstName: string, 
+            lastName:string) {
+                super(firstName, lastName);
+        }
+
+        takeTest() {
+            console.log('Taking a Test')
+        }
+    }
+
+    let student = new Student(1, 'John', 'Smith');
+    ```
+    - Best practices, classes should be in separate files
+
+- Method Overriding
+    - Changing a methods implementation
+    - Needs override keyword
+    ```
+    class Teacher extends Person {
+        override get fullName() { //keyword
+            //return 'Professor' + this.firstName + ' ' + this.lasName;
+            return 'Professor' + super.fullName; // same but concise
+        }
+    }
+
+    let teacher = new Teacher('Stephanie', 'Stralina');
+    console.log(teacher.fullName);
+    ```
+
+- Polymorphism
+    ```
+    printNames([
+        new Student(1, 'Stephanie', 'Stralina');
+        new Teacher('John', 'Smith');
+    ])
+
+    function printNames(people: Person[]) {
+        for (let person of people)
+            console.log(person.fullName);
+    }
+    ```
+    - Can continue extending person in different ways and if it's an extension it will continue adding their names to the print
+    - Should follow Open Closed Principle (best practice)
+        - Classes should be open for extension and closed for modification
+
+- Private vs Protected Members
+    - Protected are inherited, Private is not
+        - so if we have protected walk() on Person, it will be available on Student
+    - Can create coupling, use very rarely/specifically
+
+- Abstract Classes & Methods
+    ```
+    abstract class Shape {
+        constructor(public color: string) {}
+
+        abstract render(): void; // remove {} and add type for abstract method, can only exist in abstract classes
+    }
+
+    class Circle extends Shape {
+        constructor(public radius: number, color: string) {
+            super(color)
+        }
+
+        override render(): void {
+            console.log('Rendering a circle')
+        }
+    }
+
+    // shouldn't be available, which is why we use abstract
+    //  let shape = new Shape('red');
+    //  shape.render()
+    ```
+    - Abstract class like uncooked meal, not ready before extending
+
+- Interfaces
+    - Define the shape of objects
+    - Calendars can be Google, iCal, Outlook, etc.
+    ```
+    <!-- abstract class Calendar {
+        constructor(public name: string) {}
+
+        abstract addEvent(): void;
+        abstract removeEvent(): void;
+    } -->
+
+    interface Calendar {
+        name: string;
+        addEvent(): void;
+        removeEvent(): void;
+    }
+    ```
+    - When to use interface vs abstract
+        - Use if no logic/algo/method implementation (only method declarations)
