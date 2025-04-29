@@ -993,3 +993,22 @@ type Nullable<T> = {
         -config file moduleResolution: node
 
 ## JS Integration
+- Including JS code is TS projects
+    - import { function } from './relativeFile'
+    - Need to change tsconfig 'allowJs' and change module to CommonJs if not already
+- Type Checking JS code
+    - tsconfig checkJS turn on
+    - if needed temporarily use //@ts-nocheck to stop checking
+- Types & JSDoc
+    - /** @param {number} income
+    - /** @ returns {number}
+    - Can add descriptions for hover
+- Creating Declaration Files
+    - ___.d.ts for declaration files (should be same start name as js file)
+    - declare function calculatTax(income: number): number;
+        - Actual implementation is still in js and compiler will know that
+- Definitely Typed Declaration Files
+    - Using 3rd party libraries
+    - import * as _ from 'lodash';
+    - github Definitely Typed
+    - _.clone() to utilize lodash typing
