@@ -20,7 +20,7 @@ Strictness
 - Extends JS number, string boolean, null, undefined, object
 - TS: any, unknown, never, enum, tuple
 
-#### Any Type
+#### Any Type 
 If not defined, can reassign to different parts
 let level;
 level = `;
@@ -70,4 +70,24 @@ Must pass exact amount of args, add ? to make it optional and define inline
 ORRRR (preferred method below)
 taxYear = 2022 and arg if present will override it
 
+### Objects
+let employee: {
+    id: number,
+    name: string
+} = { id: 1, name: '' };
+employee.name = 'Mosh';
+
+need to put name: '' or name?: string to initialize
+
+Read Only Modifief
+readononly id: number
+
+### Advanced Types
+
+- Type Aliases
+- Unions and Intersections
+- Type Narrowing
+- Nullable Types
+- The Unknown Type
+- The Never Type
 
