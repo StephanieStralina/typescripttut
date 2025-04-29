@@ -965,4 +965,31 @@ type Nullable<T> = {
     console.log(watchedParameters)
     ```
 
+## Modules
+- Organizing TS code
+    - Split into different files by purpose (shapes, colors, etc.)
+- Exporting & Importing
+    - add export before class
+    - add import { Circle } from './relativePath' at top to utilize in other files
+        -can rename using {Circle as MyCircle} to prevent name overlap
+    - let circle = new Circle (VS code auto import)
+    - cmd + . to move to new file (VS code shortcut)
     
+#### Module Formats and Defaults
+- module in config is commonjs
+    - ctrl + space to see options
+- Weighing concise code vs breakable code (remote control theory, less interdependency between modules)
+    - export default class Store(){}
+    - can export defaults like enum
+- Wildcard Imports
+    - import * as Shapes from "./shapes";
+    - Cuts down on manual imports when using many classes
+- ReExporting
+    - Combines modules for concise code
+    - shapes/index.ts
+        -import circle, square
+        - export at end
+    - import circle, square from ./shapes IF
+        -config file moduleResolution: node
+
+## JS Integration
