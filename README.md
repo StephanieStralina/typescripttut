@@ -800,3 +800,169 @@ type Nullable<T> = {
 }
 ```
 - Built in to TS via Utility Types
+
+
+## Decorators
+- Function that gets called by JS runtime
+- No built in decorators, have to build out own
+    - Must change config settings experimentaldecorators: true
+    ```
+    @Component
+    class ProfileComponent{
+        
+    }
+    ```
+    - This would kick an error because we haven't built it yet!
+
+#### Class Decorators
+
+    ```
+    function Component(constructor: Function) {
+        console.log('Component decorator called');
+        constructor.prototype.uniqueId = Date.now();
+        constructor.prototype.insertInDOM = () => {
+            console.log('Inserting the component in the DOM');
+        }
+    }
+    ```
+- Similar to extension
+
+#### Parametized Decorators
+- Some decorators need args
+    ```
+    //Decorator factory
+    function Component(value: number) {
+        return (constructor: Function) => {
+        console.log('Component decorator called');
+        constructor.prototype.options = value;
+        constructor.prototype.uniqueId = Date.now();
+        constructor.prototype.insertInDOM = () => {
+            console.log('Inserting the component in the DOM');
+        }
+    }
+
+    @Component(1)
+    class ....
+    ```
+
+#### Decorator Composition
+- Applied in reverse order (closest to class)
+    ```
+    function Pipe(constructor: Function) {
+        console.log('Pipe decorator called');
+        constructor.prototype.pipe = true;
+    }
+
+    @Component({ selector: '#my-profile' })
+    @Pipe
+    class ProfileComponent {
+        
+    }
+    ```
+
+#### Method Decorators
+- Take 3 params: target, name of target method, Descriptor
+    ```
+    function Log(target: any, methodName: string, descriptor: PropertyDescriptor) {
+        const original = descriptor.value as Function;
+        descriptor.value = function(message: string) {
+            console.log('Before');
+            original.call(this, message);
+            console.log('After');
+        }
+    }
+
+    class Person {
+        @Log
+        say(message: string) {
+            console.log('Person says ' + message);
+        }
+    }
+
+    let person = new Person();
+    person.say = "hello"
+    ```
+    - need to turn off nounusedparameters temp for this to work
+
+#### Accessor Decorators
+- Getters/Setters
+    ```
+    function Capitalize(target: any, methodName: string, descriptor: PropertyDescriptor) {
+        const original = descriptor.get;
+        descriptor.get = function() {
+            const result = original?.call(this);
+            if (typeof result === 'string) ?
+                return result.toUpperCase() :
+                return result
+        }
+    }
+
+    class Person {
+        constructor(public firstName: string, public lastName: string) {}
+
+        @Capitalize
+        get fullName() {
+            return `${this.firsName} ${this.lastName}`'
+        }
+    }
+    ```
+
+#### Property Decorators
+
+    ```
+    function MinLength(length: number) {
+        return (target: any, propertyName: string) => {
+            let value: string;
+
+
+            const descriptor: PropertyDescriptor = {
+                get() { return value; },
+                set(newValue: string){
+                    if (newValue.length < length)
+                        throw new Error(`${propertyName} to be at least ${length} char long`);
+                    value = newValue;
+                }
+            };
+
+            Object.defineProperty(target, propertyName, descriptor);
+        }
+    }
+
+    class User {
+        @MinLength(4)
+        password: string;
+
+        constructor(password: string) {
+            this.password = password;
+        }
+    }
+
+    let user = new User('1234');
+    console.log(user.password);
+    ```
+
+#### Param Decorators
+- Not frequently used outside of defining frameworks
+    ```
+    type WatchedParam = {
+        methodName: string,
+        parameterIndex: number
+    }
+
+    const watchedParameters: WatchParam[] = [];
+
+    function Watch(target: any, methodName: string, parameterIndex: number){
+        watchedParam.push({
+            methodName,
+            parameterIndex
+        });
+    }
+
+    class Vehicle {
+        move(@Watch speed: number) {}
+    }
+
+    console.log(watchedParameters)
+    ```
+
+    
